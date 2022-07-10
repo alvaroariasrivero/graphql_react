@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import axios from 'axios';
+import React, {useEffect} from 'react';
 import './App.css';
 
 function App() {
+
+  useEffect(() => {
+    const fetch = async() => {
+      try {
+        const res = await axios.post('https://beta.pokeapi.co/graphql/v1beta', {
+          query: `query Query {
+            gen1_species: pokemon_v2_pokemonspecies(
+              where: { pokemon_v2_generation: { name: { _eq: "generation-i" } } }
+              order_by: { id: asc }
+            ) {
+              name
+              id
+            }
+          }`
+      });
+      const json = await res.data.data;
+      const gen1 = json.gen1_species
+      console.log(gen1);
+      } catch (error) {
+        console.log('Error: ', error);
+      }
+    }
+    fetch()    
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p>GraphQl</p>
     </div>
   );
 }
